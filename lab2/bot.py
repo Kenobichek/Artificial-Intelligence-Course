@@ -1,3 +1,5 @@
+# https://t.me/BookWiseExpertBot
+
 import logging
 
 from telegram import ReplyKeyboardMarkup, Update
@@ -56,12 +58,15 @@ async def regular_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if text == 'Отримати книги':
         return await get_recommended_books(update, context)
 
+    if text == '/start':
+        return await start(update, context)
+
     idx_new_answer = answers_map[text][0]
 
     context.user_data["q"] += answers_map[text][1]
 
-
     print(context.user_data["q"])
+    
     question, answers = key_value_list[idx_new_answer]
    
     markup = ReplyKeyboardMarkup(answers, one_time_keyboard=True, resize_keyboard=True)
@@ -86,12 +91,6 @@ async def get_recommended_books(update: Update, context: ContextTypes.DEFAULT_TY
 
     return ConversationHandler.END
 
-
-async def done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """Display the gathered info and end the conversation."""
-    user_data = context.user_data
-    if "choice" in user_data:
-        del user_data["choice"]
 
 def main() -> None:
     application = Application.builder().token(BOT_TOKEN).build()
